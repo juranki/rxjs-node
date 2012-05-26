@@ -8,5 +8,23 @@ var fs            = require("./lib/rx_fs.js");
 var https         = require("./lib/rx_https.js");
 var path          = require("./lib/rx_path.js");
 var sys           = require("./lib/rx_sys.js");
+var assert        = require("assert");
 
 console.log("all loaded");
+
+// Test child_process.
+var proc = child_process.spawn('cat');
+proc.asObservable().select(function(data) {
+	return data.toString().trim();
+    }).subscribe(function(data) {
+	console.log("child_process.spawn", data);
+	assert.equal(data,"hello","child_process.spawn");
+	proc.kill();
+    });
+proc.stdin.write("hello\n");
+
+
+
+
+
+
